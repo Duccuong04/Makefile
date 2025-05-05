@@ -145,3 +145,77 @@ clean:
 
 ## 7. Chia các folder trong 1 Project
 
+```c
+.PHONY: all
+
+CC := gcc
+INC_FILE := ./Inc/hieu.h
+INC_FILE += ./Inc/tong.h
+
+%.o: $(INC_FILE)
+	$(CC) -c Src/hieu.c -o obj/hieu.o -I./Inc
+	$(CC) -c Src/tong.c -o obj/tong.o -I./Inc
+	$(CC) -c main.c -o obj/main.o -I./Inc
+
+tong: obj/tong.o obj/main.o
+	$(CC) -o bin/out.exe obj/tong.o obj/main.o
+
+hieu: obj/hieu.o obj/main.o
+	$(CC) -o bin/out.exe obj/hieu.o obj/main.o
+
+run:
+	.\bin\out.exe
+clean:
+	rm ./obj/*.o
+```
+
+- Tạo biến `INC_FILE` chứa đường dẫn đến hai file header. Dòng đầu **khởi tạo**, dòng sau **nối thêm** (sử dụng +=) để có 2 file header.
+
+- `%.o: $(INC_FILE)`: build file .o khi file .h thay đổi
+
+## 8. Implicit Rule, Automatic variables, Pattern rules & cách tự động build trong Makefile
+
+```c
+.PHONY: hello
+
+CC := gcc
+CFLAGS := -I.
+
+INC_FILE := hello.h
+
+%.o: %.c $(INC_FILES)
+	$(CC) -o $@ $<
+
+hello: main.o hello.o
+	$(CC) -o $@ $^ $(CFLAGS)
+
+clean: 
+	rm hello *.o
+```
+
+Việc chạy các implicit rule và các automatic variables, mỗi lần build thì không biết file nào thay đổi hay có lỗi ở file đó nhưng Makefile vẫn build và tạo ra file .exe -> **Pattern rules**
+### Pattern Rules
+![alt text](image-13.png)
+
+![alt text](image-14.png)
+
+```c
+%.o: %.c $(INC_FILES)
+	$(CC) -o $@ $<
+```
+
+-> **Những file có thay đổi mới build ra, báo lỗi**
+
+## 9. Static Lib & Share Lib
+
+![alt text](image-15.png)
+
+![alt text](image-16.png)
+
+![alt text](image-17.png)
+
+Follow the link: https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/create-libraries/index
+
+## 10. VPATH
+
+![alt text](image-18.png)
